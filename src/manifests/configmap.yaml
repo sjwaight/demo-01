@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: demo-web-app-config
-  namespace: sample-app
+  namespace: staged-rollout-demo
   labels:
     app.kubernetes.io/name: demo-web-app
 data:

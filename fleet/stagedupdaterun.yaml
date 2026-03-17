@@ -1,0 +1,8 @@
+apiVersion: placement.kubernetes-fleet.io/v1
+kind: ClusterStagedUpdateRun
+metadata:
+  name: stage-app-rollout-01
+spec:
+  placementName: staged-rollout-app-placement
+  stagedRolloutStrategyName: sample-app-staged-prod-approval
+  state: Initialize

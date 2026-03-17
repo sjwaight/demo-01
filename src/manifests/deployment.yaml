@@ -4,7 +4,7 @@ metadata:
   name: demo-web-app-deployment
   labels:
     app.kubernetes.io/name: demo-web-app
-  namespace: sample-app
+  namespace: staged-rollout-demo
 spec:
   replicas: 1
   selector:
@@ -16,7 +16,7 @@ spec:
         app.kubernetes.io/name: demo-web-app
     spec:
       containers:
-        - name: fm-ad-app-01
+        - name: demo-web-app
           image: ghcr.io/sjwaight/demo-01/demo-web-app:a4e530c
           imagePullPolicy: Always
           ports:

@@ -1,7 +1,7 @@
-apiVersion: placement.kubernetes-fleet.io/v1alpha1
+apiVersion: placement.kubernetes-fleet.io/v1
 kind: ClusterStagedUpdateStrategy
 metadata:
-  name: sample-app-staged
+  name: sample-app-staged-prod-approval
 spec:
   stages:
     - name: development
@@ -18,6 +18,8 @@ spec:
       afterStageTasks:
         - type: TimedWait
           waitTime: 1m
+      beforeStageTasks:
+        - type: Approval
     - name: production 
       labelSelector:
         matchLabels:
