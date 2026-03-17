@@ -1,11 +1,11 @@
-name: package-ai-service
+name: package-web-app
 
 on:
   push:
     branches:
       - 'main'
     paths:
-      - 'src/ai-service/**'
+      - 'src/**'
 
   workflow_dispatch:
 
