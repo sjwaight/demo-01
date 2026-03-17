@@ -27,6 +27,10 @@ jobs:
 
       - name: Set up kubelogin
         uses: azure/use-kubelogin@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          kubelogin-version: 'latest'
 
       - name: Set Kubernetes context
         uses: azure/k8s-set-context@v4
