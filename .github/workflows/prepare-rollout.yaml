@@ -1,0 +1,59 @@
+name: prepare-rollout
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/manifests/**'
+      - 'fleet/**'
+      - '.github/workflows/prepare-rollout.yaml'
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-manifests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Set Kubernetes context
+        uses: azure/k8s-set-context@v4
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.MY_KUBE_CONFIG }}
+
+      - name: Validate namespace exists
+        run: kubectl get namespace sample-app
+
+      - name: Generate staged update run manifest
+        run: |
+          cat <<EOF > "$RUNNER_TEMP/stagedupdaterun.yaml"
+          apiVersion: placement.kubernetes-fleet.io/v1
+          kind: ClusterStagedUpdateRun
+          metadata:
+            name: sample-app-staged-run-$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          spec:
+            placementName: sample-app-placement
+            stagedRolloutStrategyName: sample-app-staged
+            state: Initialize
+          EOF
+
+          cat "$RUNNER_TEMP/stagedupdaterun.yaml"
+
+      - name: Apply manifests to sample-app namespace
+        run: |
+          kubectl apply --namespace sample-app -f src/manifests/configmap.yaml
+          kubectl apply --namespace sample-app -f src/manifests/deployment.yaml
+          kubectl apply --namespace sample-app -f src/manifests/service.yaml
+          kubectl apply --namespace sample-app -f fleet/placement.yaml
+          kubectl apply --namespace sample-app -f fleet/stagedrolloutstrategy.yaml
+          kubectl apply --namespace sample-app -f "$RUNNER_TEMP/stagedupdaterun.yaml"
