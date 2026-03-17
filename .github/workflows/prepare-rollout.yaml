@@ -25,11 +25,15 @@ jobs:
       - name: Set up kubectl
         uses: azure/setup-kubectl@v4
 
+      - name: Set up kubelogin
+        uses: azure/use-kubelogin@v1
+
       - name: Set Kubernetes context
         uses: azure/k8s-set-context@v4
         with:
           method: kubeconfig
           kubeconfig: ${{ secrets.MY_KUBE_CONFIG }}
+          
 
       - name: Validate namespace exists
         run: kubectl get namespace sample-app
